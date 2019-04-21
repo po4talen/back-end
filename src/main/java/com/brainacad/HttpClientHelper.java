@@ -1,29 +1,25 @@
 package com.brainacad;
 
-import org.apache.http.Header;
 import org.apache.http.HttpResponse;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPost;
+import org.apache.http.client.methods.HttpPut;
 import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.HttpClientBuilder;
 
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.security.PublicKey;
 import java.util.HashMap;
 import java.util.Map;
-
-import static org.apache.http.protocol.HTTP.USER_AGENT;
 
 public class HttpClientHelper {
 
     public static HttpResponse get(String endpointUrl, String parameters) throws IOException {
-        //TODO: написать метод для GET запроса с хедерами по умолчанию
-        Map<String, String> headers=new HashMap<>();
+        Map<String, String> headers = new HashMap<>();
         headers.put("User-Agent", "My-Test-User-Agent");
-        return get(endpointUrl, parameters,headers);
+        return get(endpointUrl, parameters, headers);
     }
 
     //REST GET запрос
@@ -31,10 +27,10 @@ public class HttpClientHelper {
         //Создаём экземпляр HTTP клиента
         HttpClient client = HttpClientBuilder.create().build();
         //Создаём HTTP GET запрос из URL и параметров
-        HttpGet request = new HttpGet(endpointUrl+"?"+parameters);
+        HttpGet request = new HttpGet(endpointUrl + "?" + parameters);
 
         //добавляем в запрос необходимые хедеры
-        for(String headerKey:headers.keySet()) {
+        for (String headerKey : headers.keySet()) {
             request.addHeader(headerKey, headers.get(headerKey));
         }
 
@@ -47,20 +43,19 @@ public class HttpClientHelper {
 
 
     public static HttpResponse post(String endpointUrl, String parameters) throws IOException {
-        //TODO: написать метод для POST запроса с хедерами по умолчанию
-        Map<String,String> headers = new HashMap<>();
+        Map<String, String> headers = new HashMap<>();
         headers.put("User-Agent", "My-Test-User-Agent");
-        return post(endpointUrl, parameters,headers);
+        return post(endpointUrl, parameters, headers);
     }
 
-    public static HttpResponse post(String endpointUrl, String body, Map<String, String> headers) throws IOException{
+    public static HttpResponse post(String endpointUrl, String body, Map<String, String> headers) throws IOException {
         //Создаём экземпляр HTTP клиента
         HttpClient client = HttpClientBuilder.create().build();
         //Создаём HTTP POST запрос из URL и параметров
         HttpPost post = new HttpPost(endpointUrl);
 
         //добавляем в запрос необходимые хедеры
-        for(String headerKey:headers.keySet()) {
+        for (String headerKey : headers.keySet()) {
             post.addHeader(headerKey, headers.get(headerKey));
         }
 
@@ -91,8 +86,36 @@ public class HttpClientHelper {
     }
 
     //TODO: допишите методы для запросов PUT, PATCH и DELETE
-    public static HttpResponse post(){
 
-        return null;
+    public static HttpResponse put(String endpointUrl, String parameters) throws IOException {
+        Map<String, String> headers = new HashMap<>();
+        headers.put("User-Agent", "My-Test-User-Agent");
+        return put(endpointUrl, parameters, headers);
     }
-}
+
+        public static HttpResponse put (String endpointUrl, String body, Map < String, String > headers) throws
+        IOException {
+            //Создаём экземпляр HTTP клиента
+            HttpClient client = HttpClientBuilder.create().build();
+
+            //Создаём HTTP POST запрос из URL и параметров
+            HttpPut post = new HttpPut(endpointUrl);
+
+            //добавляем в запрос необходимые хедеры
+            for (String headerKey : headers.keySet()) {
+                post.addHeader(headerKey, headers.get(headerKey));
+            }
+
+            //добавляем к запросу тело запроса
+            post.setEntity(new StringEntity(body));
+
+            //выполняем запрос в HTTP клиенте и получаем ответ
+            HttpResponse response = client.execute(post);
+
+            //возвращаем response
+            return response;
+        }
+    }
+
+
+
