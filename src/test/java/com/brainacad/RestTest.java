@@ -1,13 +1,17 @@
 package com.brainacad;
 
 import org.apache.http.HttpResponse;
+import org.joda.time.DateTime;
+import org.joda.time.format.DateTimeFormat;
+import org.joda.time.format.DateTimeFormatter;
 import org.junit.Assert;
 import org.junit.Test;
 
 import java.io.IOException;
+import java.util.Arrays;
+import java.util.List;
 
-import static com.brainacad.JsonUtils.intFromJSONByPath;
-import static com.brainacad.JsonUtils.stringFromJSONByPath;
+import static com.brainacad.JsonUtils.*;
 
 
 public class RestTest{
@@ -126,8 +130,32 @@ public class RestTest{
       System.out.println("Response Code : " + statusCode);
       Assert.assertEquals("Response status code should be 200", 200, statusCode);
       String body=HttpClientHelper.getBodyFromResponse(response);
-      System.out.println(body);
+     // System.out.println(body);
       String data=stringFromJSONByPath(body,"$.updatedAt");
-        System.out.println(data);
+     // DateTimeFormatter formatter = DateTimeFormat.forPattern("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'");--можно так
+      DateTimeFormatter formatter = DateTimeFormat.forPattern("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'").withZoneUTC();
+      DateTime dt = formatter.parseDateTime(data);
+        System.out.println(dt);
+     // Assert.assertTrue("Error messsege",dt.plusHours(3).plusMinutes(-1).isBeforeNow()); --тогда так
+      Assert.assertTrue("Error messsege",dt.plusMinutes(-10).isBeforeNow());
+    }
+
+    @Test// Get method (List data)
+    public void checkListDAta() throws IOException {
+        String endpoint="/api/users";
+        HttpResponse response = HttpClientHelper.get(URL+endpoint,"page=2");
+        String body = HttpClientHelper.getBodyFromResponse(response);
+        List actuallist = listFromJSONByPath(body,"$.data[*].first_name");
+        List expectedlist = Arrays.asList("Eve","Charles","Tracey");
+        Assert.assertEquals("Error msg",expectedlist, actuallist);
+    }
+
+    @Test //DEL method
+    public void Delete()throws IOException{
+        String endpoint="/api/users/2";
+        HttpResponse response = HttpClientHelper.delete(URL+endpoint);
+        int statusCode = response.getStatusLine().getStatusCode();
+        Assert.assertEquals("Response status code should be 204", 204, statusCode);
     }
 }
+
