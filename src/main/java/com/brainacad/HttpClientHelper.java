@@ -3,6 +3,7 @@ package com.brainacad;
 import org.apache.http.HttpResponse;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpGet;
+import org.apache.http.client.methods.HttpPatch;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.client.methods.HttpPut;
 import org.apache.http.entity.StringEntity;
@@ -99,23 +100,53 @@ public class HttpClientHelper {
             HttpClient client = HttpClientBuilder.create().build();
 
             //Создаём HTTP POST запрос из URL и параметров
-            HttpPut post = new HttpPut(endpointUrl);
+            HttpPut put = new HttpPut(endpointUrl);
 
             //добавляем в запрос необходимые хедеры
             for (String headerKey : headers.keySet()) {
-                post.addHeader(headerKey, headers.get(headerKey));
+                put.addHeader(headerKey, headers.get(headerKey));
             }
 
             //добавляем к запросу тело запроса
-            post.setEntity(new StringEntity(body));
+            put.setEntity(new StringEntity(body));
 
             //выполняем запрос в HTTP клиенте и получаем ответ
-            HttpResponse response = client.execute(post);
+            HttpResponse response = client.execute(put);
+
+            //возвращаем response
+            return response;
+        }
+
+    public static HttpResponse patch(String endpointUrl, String parameters) throws IOException {
+        Map<String, String> headers = new HashMap<>();
+        headers.put("User-Agent", "My-Test-User-Agent");
+        return patch(endpointUrl, parameters, headers);
+    }
+
+        public static HttpResponse patch(String endpointUrl, String body, Map < String, String > headers) throws
+        IOException {
+            //Создаём экземпляр HTTP клиента
+            HttpClient client = HttpClientBuilder.create().build();
+            //Создаём HTTP POST запрос из URL и параметров
+            HttpPatch patch = new HttpPatch(endpointUrl);
+
+            //добавляем в запрос необходимые хедеры
+            for (String headerKey : headers.keySet()) {
+                patch.addHeader(headerKey, headers.get(headerKey));
+            }
+
+            //добавляем к запросу тело запроса
+            patch.setEntity(new StringEntity(body));
+
+            //выполняем запрос в HTTP клиенте и получаем ответ
+            HttpResponse response = client.execute(patch);
 
             //возвращаем response
             return response;
         }
     }
+
+
 
 
 

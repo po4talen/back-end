@@ -12,7 +12,7 @@ import static com.brainacad.JsonUtils.stringFromJSONByPath;
 
 public class RestTest{
 
-    private static final String URL="https://reqres.in/";
+    private static final String URL="https://reqres.in";
 
     @Test//GET метод
     public void checkGetResponseStatusCode() throws IOException {
@@ -105,14 +105,29 @@ public class RestTest{
         //Выполняем REST POST запрос с нашими параметрами
         // и сохраняем результат в переменную response.
         HttpResponse response = HttpClientHelper.put(URL+endpoint,requestBody);
-
         //получаем статус код из ответа
-        int statusCode = response.getStatusLine().getStatusCode();
+       int statusCode = response.getStatusLine().getStatusCode();
         System.out.println("Response Code : " + statusCode);
         Assert.assertEquals("Response status code should be 200", 200, statusCode);
         String body=HttpClientHelper.getBodyFromResponse(response);
         System.out.println(body);
     }
+    @Test //PATCH method
+  public void checkPatchResponseData() throws IOException{
+      String endpoint="/api/users/2";
 
+      //создаём тело запроса
+      String requestBody="{\"name\": \"morpheus\",\"job\": \"zion resident\"}";
 
+      //Выполняем REST POST запрос с нашими параметрами
+      // и сохраняем результат в переменную response.
+      HttpResponse response = HttpClientHelper.patch(URL+endpoint,requestBody);
+      int statusCode = response.getStatusLine().getStatusCode();
+      System.out.println("Response Code : " + statusCode);
+      Assert.assertEquals("Response status code should be 200", 200, statusCode);
+      String body=HttpClientHelper.getBodyFromResponse(response);
+      System.out.println(body);
+      String data=stringFromJSONByPath(body,"$.updatedAt");
+        System.out.println(data);
+    }
 }

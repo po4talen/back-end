@@ -25,7 +25,12 @@ public class JsonUtils {
       double data = JsonPath.read(json, jsonPath);
       return (data);
     }
+//TODO: Используя библиотеку com.jayway.jsonpath (Maven) напишите метод извлечения double из JSON по JSON Path:
 
+  public static long longFromJSONByPath(String json, String jsonPath){
+    long data = JsonPath.read(json, jsonPath);
+    return (data);
+  }
 
     //TODO: Используя библиотеку com.jayway.jsonpath (Maven) напишите метод извлечения списка (List) из JSON по JSON Path:
 
